@@ -6,7 +6,7 @@ import output_to_file as output
 # filepath to slide, to be replaced with a live feed later
 
 # the test file
-# path = '/Users/thomastang/Documents/Screenshots/Screenshot 2023-12-18 at 12.45.38 PM.png'
+# path = '/Users/name/Documents/Screenshots/Screenshot 2023-12-18 at 12.45.38 PM.png'
 
 # take input from user for the file location
 path = input('Path to your image:\n')
