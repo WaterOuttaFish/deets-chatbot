@@ -1,36 +1,38 @@
-# import the packages made
+# function imports
 import ocr
+import caching
 import summarizer
 import output_to_file as output
+# module imports
 from PIL import Image
 import time # track execution time
-from numba import jit
+import tiktoken
 
+"""
+BRANCH NOTES:
 
-# filepath to slide, to be replaced with a live feed later
+"""
 
-# the test file
-# path = '/Users/name/Documents/Screenshots/Screenshot 2023-12-18 at 12.45.38 PM.png'
+# take screenshot and summarize output
+caching.save_img()
+file_path = 'recentCache.png' #default file name of 
 
-# take input from user for the file location
-# path = input('Path to your image:\n')
-#pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR"
-
-#@jit # run analyse_and_output on gpu
-def analyse_and_output(path):
-    # analyse image for text
-    original_text = ocr.img2txt(path)
-    print ('Original text is: ' + original_text)
-
+# wrapper function
+def analyse_and_output(file_path):
+    # run OCR on image
+    original_text = ocr.img2txt(file_path)
     # summarize the text
-    summarized_text = summarizer.summarize(original_text)
-    print('Summarized text is: ' + summarized_text)
+    summarized_text = summarizer.big_input_summarize(original_text, 800, tiktoken.get_encoding("cl100k_base"))
+    return summarized_text
 
-    output.write_output('Original text:\n\n' + original_text + '\n\n\n\nBREAK\n\n\n\n' + 'Summarized text:\n\n' + summarized_text)
-
-path = r"C:\Users\Pranav\Downloads\testing_ocr_big.png"
 # track time
 t0 = time.perf_counter() # start time
-analyse_and_output(path)
+output_summary = analyse_and_output(file_path)
+input = ''.join(output_summary)
+output.cached_output(input)
+print(output_summary)
+time.sleep(10)
+output.cached_output(input)
 t1 = time.perf_counter() # end time
+print("--------------------------------------------------------")
 print("Execution time: ", t1-t0)
