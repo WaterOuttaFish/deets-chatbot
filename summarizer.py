@@ -1,6 +1,6 @@
+from transformers import pipeline # import pipeline function to use huggingface models
+import tiktoken # decode text
 def summarize(text):
-    # import pipeline function to use huggingface models
-    from transformers import pipeline
 
     # define the pipeline as summarization and specify the model - we're training our own later
     pipe = pipeline('summarization', model='facebook/bart-large-cnn')
@@ -11,3 +11,75 @@ def summarize(text):
     # return the text to the sender
     return summary_text
 
+def big_input_summarize(text: str, max_token_length: int, encoding: tiktoken.Encoding): 
+    tokens = encoding.encode(text)
+
+     # initialize variables
+    parts = []
+    text_parts = []
+    current_part = []
+    token_count = 0
+    tokens = encoding.encode(text)
+
+    for token in tokens:
+        current_part.append(token)
+        token_count += 1
+        if token_count >= max_token_length:
+            parts.append(current_part)
+            current_part = []
+            token_count = 0
+
+    if current_part:
+        parts.append(current_part)
+
+        # convert tokenized text into string
+    for x in parts:
+        text = [
+            encoding.decode_single_token_bytes(token).decode("utf-8",errors="replace")
+            for token in x
+        ]
+        text_parts.append(''.join(text))
+    
+    # summarize each chunk of text
+    summaries = []
+    for x in text_parts:
+        summaries.append(summarize(x))
+    
+    return summaries
+
+    
+text = """
+Effect of hydroxide on the EMF of a copper-zinc galvanic cell
+Introduction
+I became interested in battery technology when my parents were looking into electric cars to save on fuel costs. Our primary concern with electric cars was their drop in range in colder temperatures since we live in a cold climate. I kept this in mind when learning about voltaic cells in Chemistry. We learnt that temperature and concentration of half cells affected the EMF of the voltaic cell. I w as curious about the effect of a side reaction occurring inside a half cell on the EMF of the entire cell. 
+An experimental setup  was devised to measure the effect of adding a reactant, NaOH(s), on the EMF of a voltaic cell. The cell used was made with copper and zinc half cells with a theoretical voltage of 1.10V. Electrolyte solutions of 1.0M CuSO4 and ZnSO4 were prepared for use in the copper and zinc half cells respectively. NaOH(s) was added to the copper half cell and was chosen as the reactant since it reacts with CuSO4(aq) to form solid Cu(OH)2 which is unable to participate    in the redox reaction that generates voltage. 
+It was difficult to find a paper with a similar experimental set-up, so an attempt was made to derive an equation to predict the EMF of the copper-zinc voltaic cell. This theoretical value was compared with experimental data to gauge the accuracy of the experiment.
+Research Question
+How does the addition of sodium hydroxide (g) into a copper half-cell affect the EMF (V) of a copper-zinc voltaic cell?
+Background Information
+What are voltaic cells?
+Voltaic cells are a type of electrochemical cell where a transfer of electrons during a spontaneous redox reaction is harnessed to do work . A voltaic cell consists of two half cells; the cathode half cell where reduction occurs and the anode half cell where oxidation occurs. These half cells are separated and when connected by a wire, the electron from anode to cathode generates a current.
+Each half cell consists of a piece of solid metal, called an electrode, and a solution of the metal salt, called the electrolyte. The EMF of the cell can be deduced from the standard reduction potentials which measure the EMF of each half reaction when connected to a standardized reference half cell called the Standard Hydrogen Electrode. Specifically, the EMF of a voltaic cell, EΘ measured at SATP and equal concentrations of electrolyte solutions, is calculated to be Eanode – Ecathode, and a positive EΘ indicates a spontaneous flow of electrons from anode to cathode. 
+In this experiment, copper and zinc half cells were used. 
+Copper half cell reaction: Cu_{\left(aq\right)}^{2+}+2\mathrm{e}^\mathrm{-}\rlharCu_{\left(s\right)} E^\Theta=+0.34V\ 
+Zinc half cell reaction:    Zn_{\left(aq\right)}^{2+}+2e^-\rlharZn_{\left(s\right)} E^\Theta=-0.76V
+The smaller E^\Theta is, the more likely a species is to oxidize. Hence, Zn_{\left(s\right)} oxidizes at the anode. The EMF of the cell is therefore: E^\Theta=0.34-\left(-0.76\right)=1.10V
+The addition of NaOH
+NaOH_{\left(s\right)} is added to the copper half cell :
+2NaOH_{\left(s\right)}+CuSO_{4\left(aq\right)}\rightarrowCu\left(OH\right)_{2\left(s\right)}+Na_2SO_{4\left(aq\right)}
+Copper  ions are “trapped” from being reduced after reacting with sodium hydroxide to form copper hydroxide precipitate. Fewer copper ions are available to be reduced in the copper half cell, so the concentration of Cu_{\left(aq\right)}^{2+} effectively decreases. To predict the drop in EMF after adding NaOH, we can use the Nerst equation.
+E=E^\Theta-\frac{RT}{zF}lnQ
+where E is the EMF of the cell at non-standard conditions, E^\Theta is the EMF of the cell at SATP, R is the universal gas constant, T is temperature, F is Faraday’s constant (96485 C/mol), z is the moles of electrons transferred during the redox reaction, and Q is the reaction quotient.  
+Since Q=\left[Zn\right]_{\left(aq\right)}^{2+}/\left[Cu\right]_{\left(aq\right)}^{2+} and \left[Zn\right]_{\left(aq\right)}^{2+} = 1.0 mol/dm3 was used in this experiment, we can simplify the Nerst Equation:
+E=E^\Theta-\frac{RT}{zF}\left(ln\left[Zn\right]^{2+}-ln\left[Cu\right]^{2+}\right)\ and\ since{\ \left[Zn\right]}^{2+}=1.0\ mol/dm^3,\ ln\left[Zn\right]^{2+}=0\bigmE=E^\Theta+\frac{RT}{zF}ln\left[Cu\right]^{2+}
+After the sodium hydroxide reacts with the copper sulphate to form a copper hydroxide precipitate, the concentration of Cu_{\left(aq\right)}^{2+} decreases. We can use the stoichiometry of this reaction to predict the drop in concentration. The process to do so is outlined below:
+The copper half-cell is 1.0 mol/dm3 and contains 0.025 dm3 of copper(ii) sulphate. The initial moles of Cu_{\left(aq\right)}^{2+} is 0.025\ dm^3\times1.0\ mol/dm^3=0.025\ mol
+
+"""
+text2 = "womp womp womp womp womp womp womp womp"
+
+#sample use
+"""
+test = big_input_summarize(text,900,tiktoken.get_encoding("cl100k_base"))
+print(test)
+"""

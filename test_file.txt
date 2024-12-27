@@ -1,0 +1,104 @@
+Original text:
+
+‘You can use this command in Anaconda prompt to install both.
+
+conds inevall muna ¢ conda inevall cudatoolkic
+
+‘You can check the Numba version by using the following commands in
+
+Python prompt.
+
+o5> import umbe
+S5> nunba.__version_
+
+Image by Autnor
+
+Now, everything is set, and let's make the Python script run on GPU.
+
+from numba import jit
+import numpy as np
+
+from timeit import default timer as timer
+|
+f To run on CPU
+def func(a):
+for i in range (10000000):
+alil+= 1
+‘© run on GPU
+def func? (x):
+return x+1
+if name '
+f= 10000000
+a = np.ones(n, dtype = np.float64)
+start = timer()
+func (a)
+print(" i timer ()-start)
+start = timer()
+func? (a)
+numba .cuda.profile_stop()
+print(" i", timer ()-start)
+
+Image by Autnor
+
+‘from numba import jit
+amport numpy as op
+from timeit import default timer as timer
+To rm on CRU
+def func(2)
+for i in range(10000000) :
+alii 1
+
+To rm on GPU
+
+eit
+
+def fune2 (x)
+serum al
+
+2 = mp.cnes(n, doype = mp.flostés)
+
+scart = timer)
+anc (a)
+Print ("without GPU:
+
+timer ()~stars)
+
+scart = timer()
+anc? (a)
+
+urbe cuda profile stop()
+
+print ("with GPU:", timer ()start)
+
+‘When you execute this, you will get the output as follows.
+Image by Author
+
+‘You can check the Performance tab at the Task Manager while executing the
+
+code that the GPU will have a sudden peak from 0 and will return back to 0
+
+which indicates that the GPU worked.
+
+‘You can try many GPU-based scripts in Windows 10 by referring to the
+documentation of Numba.
+
+Numba CUDA
+
+‘Welcome to the Parallel computing world.
+
+Hope the article can help. Share your thoughts too.
+
+Sign up for Geek Culture Hits
+Pyceaccumre
+_suosenbetoraave top 19 mest reaa storia ot Geek Culture —opvarea strait ino your inbox once a wes Takes
+
+
+
+
+BREAK
+
+
+
+Summarized text:
+
+You can use this command in Anaconda prompt to install both. ‘You can check the Numba version by using the following commands inPython prompt.’ You can try many. GPU-based scripts in Windows 10 by referring to the document. of NumbA.
